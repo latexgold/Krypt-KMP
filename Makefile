@@ -7,9 +7,9 @@ MODULE_NAME := krypt
 
 INCLUDE_DIRS := \
 	-Ikernel/include \
-	-kernel/patch/include \
-	-kernel/linux/include \
-	-kernel/linux/arch/arm64/include
+	-Ikernel/patch/include \
+	-Ikernel/linux/include \
+	-Ikernel/linux/arch/arm64/include
 
 CFLAGS := -Wall -Werror -O2 -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -fno-stack-protector -mgeneral-regs-only -mcmodel=large
 LDFLAGS := -T hello.lds -e kpm_init -z norelro
