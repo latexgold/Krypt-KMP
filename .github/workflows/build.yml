@@ -34,8 +34,10 @@ jobs:
 
     - name: Compile KPM
       run: |
+        echo "Files in current directory:"
+        ls -la
         export TARGET_COMPILE=aarch64-none-elf-
-        make
+        make -f Makefile
 
     - name: Upload KPM Artifact
       uses: actions/upload-artifact@v4
