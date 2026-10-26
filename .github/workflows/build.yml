@@ -1,0 +1,44 @@
+name: Build Krypt KPM
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Install Toolchain & Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu wget unzip
+
+    - name: Setup Compiler Path
+      run: |
+        sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc /usr/local/bin/aarch64-none-elf-gcc
+        sudo ln -sf /usr/bin/aarch64-linux-gnu-ld /usr/local/bin/aarch64-none-elf-ld
+        sudo ln -sf /usr/bin/aarch64-linux-gnu-objcopy /usr/local/bin/aarch64-none-elf-objcopy
+
+    - name: Download KernelPatch Framework
+      run: |
+        git clone --depth 1 https://github.com/bmax121/KernelPatch.git kpatch
+        mkdir -p kernel/include
+        mkdir -p kernel/patch/include
+        cp -r kpatch/kernel/include/* kernel/include/
+        cp -r kpatch/kernel/patch/include/* kernel/patch/include/
+
+    - name: Compile KPM
+      run: |
+        export TARGET_COMPILE=aarch64-none-elf-
+        make
+
+    - name: Upload KPM Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: krypt_kpm
+        path: krypt.kpm
